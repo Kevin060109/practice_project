@@ -1,36 +1,16 @@
-import java.util.ArrayList;
-import java.util.List;
-
 public class App {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
+        SliceOHeaven pizza1 = new SliceOHeaven();
+        pizza1.storeName = "Slice-o-Heaven";
+        pizza1.storeAddress = "123 Pizza Street";
+        pizza1.storeEmail = "contact@sliceoheaven.com";
+        pizza1.storePhone = 1234567890L;
+        pizza1.storeMenu = "Pizza, Sides, Drinks";
+        pizza1.pizzaIngredients = "Cheese, Tomato Sauce, Pepperoni";
+        pizza1.pizzaPrice = 15.00;
+        pizza1.sides = "Garlic Bread, Salad";
+        pizza1.drinks = "Soda, Water";
 
-        List<String> menu = new ArrayList<>();
-        menu.add("Margherita Pizza");
-        menu.add("Pepperoni Pizza");
-
-        List<String> ingredients = new ArrayList<>();
-        ingredients.add("Tomato Sauce");
-        ingredients.add("Cheese");
-        ingredients.add("Basil");
-
-        List<String> sideList = new ArrayList<>();
-        sideList.add("Garlic Bread");
-        sideList.add("Fries");
-
-        List<String> drinkList = new ArrayList<>();
-        drinkList.add("Coke");
-        drinkList.add("Sprite");
-
-        SliceOHeaven pizzeria = new SliceOHeaven("Slice-o-Heaven", "123 Pizza St", "info@sliceoheaven.com",
-                "555-1234", menu, ingredients, 10.0, sideList, drinkList);
-
-        List<String> selectedSides = new ArrayList<>();
-        selectedSides.add("Garlic Bread");
-        List<String> selectedDrinks = new ArrayList<>();
-        selectedDrinks.add("Coke");
-
-        pizzeria.takeOrder(1, selectedSides, selectedDrinks);
-
-        pizzeria.makePizza();
+        pizza1.takeOrder("1234", 20.00);
     }
 }
