@@ -11,6 +11,6 @@ public class App {
         pizza1.sides = "Garlic Bread, Salad";
         pizza1.drinks = "Soda, Water";
 
-        pizza1.takeOrder("1234", 20.00);
+        pizza1.takeOrder("1234", 15.00);
     }
 }
