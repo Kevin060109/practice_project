@@ -1,6 +1,7 @@
+
 public class App {
     public static void main(String[] args) throws Exception {
-        SliceOHeaven pizza1 = new SliceOHeaven();
+        Slice_o_Heaven pizza1 = new Slice_o_Heaven();
         pizza1.storeName = "Slice-o-Heaven";
         pizza1.storeAddress = "123 Pizza Street";
         pizza1.storeEmail = "contact@sliceoheaven.com";
@@ -11,6 +12,6 @@ public class App {
         pizza1.sides = "Garlic Bread, Salad";
         pizza1.drinks = "Soda, Water";
 
-        pizza1.takeOrder("1234", 15.00);
+        pizza1.takeOrder();
     }
 }
