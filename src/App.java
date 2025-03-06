@@ -7,7 +7,7 @@ public class App {
         pizza1.storeEmail = "contact@sliceoheaven.com";
         pizza1.storePhone = 1234567890L;
         pizza1.storeMenu = "Pizza, Sides, Drinks";
-        pizza1.pizzaIngredients = "Cheese, Tomato Sauce, Pepperoni";
+        pizza1.pizzaIngredients = " Mushroom, Paprika, Sun-dried tomatoes, Chicken, Pineapple";
         pizza1.pizzaPrice = 15.00;
         pizza1.sides = "Garlic Bread, Salad";
         pizza1.drinks = "Soda, Water";
