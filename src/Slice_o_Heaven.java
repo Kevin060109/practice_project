@@ -206,11 +206,11 @@ public class Slice_o_Heaven {
     public void isItYourBirthday() {
         Scanner scanner = new Scanner(System.in);
         boolean validDate = false;
+        Date birthdate = null;
         while (!validDate) {
             System.out.println("Enter your birthday (dd/MM/yyyy):");
             String birthdateStr = scanner.next();
             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-            Date birthdate = null;
             try {
                 birthdate = sdf.parse(birthdateStr);
                 Calendar cal = Calendar.getInstance();
@@ -232,7 +232,6 @@ public class Slice_o_Heaven {
         int currentMonth = cal.get(Calendar.MONTH) + 1;
         int currentDay = cal.get(Calendar.DAY_OF_MONTH);
 
-        Date birthdate = null;
         cal.setTime(birthdate);
         int birthYear = cal.get(Calendar.YEAR);
         int birthMonth = cal.get(Calendar.MONTH) + 1;
