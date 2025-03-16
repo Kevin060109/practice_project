@@ -1,329 +1,223 @@
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.Scanner;
 
+enum PizzaSelection {
+    MARGHERITA(8.0),
+    PEPPERONI(9.5),
+    VEGGIE(9.0),
+    BBQ_CHICKEN(10.0),
+    HAWAIIAN(9.5);
+
+    private final double price;
+
+    PizzaSelection(double price) {
+        this.price = price;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+}
+
+enum PizzaToppings {
+    CHEESE(1.0, "Cheese"),
+    PEPPERONI(1.5, "Pepperoni"),
+    MUSHROOMS(1.2, "Mushrooms"),
+    ONIONS(0.8, "Onions"),
+    OLIVES(1.0, "Olives"),
+    BACON(1.7, "Bacon"),
+    PINEAPPLE(1.3, "Pineapple"),
+    SPINACH(1.1, "Spinach"),
+    SAUSAGE(1.6, "Sausage"),
+    PEPPERS(1.0, "Peppers");
+
+    private final double toppingPrice;
+    private final String topping;
+
+    PizzaToppings(double toppingPrice, String topping) {
+        this.toppingPrice = toppingPrice;
+        this.topping = topping;
+    }
+
+    public double getToppingPrice() {
+        return toppingPrice;
+    }
+
+    public String getTopping() {
+        return topping;
+    }
+}
+
+enum PizzaSize {
+    SMALL(0.0, "Small"),
+    MEDIUM(2.0, "Medium"),
+    LARGE(4.0, "Large");
+
+    private final double addToPizzaPrice;
+    private final String pizzaSize;
+
+    PizzaSize(double addToPizzaPrice, String pizzaSize) {
+        this.addToPizzaPrice = addToPizzaPrice;
+        this.pizzaSize = pizzaSize;
+    }
+
+    public double getAddToPizzaPrice() {
+        return addToPizzaPrice;
+    }
+
+    public String getPizzaSize() {
+        return pizzaSize;
+    }
+}
+
+enum SideDish {
+    GARLIC_BREAD(3.0, "Garlic Bread"),
+    CHICKEN_WINGS(5.0, "Chicken Wings"),
+    MOZZARELLA_STICKS(4.0, "Mozzarella Sticks"),
+    SALAD(2.5, "Salad");
+
+    private final double addToPizzaPrice;
+    private final String sideDishName;
+
+    SideDish(double addToPizzaPrice, String sideDishName) {
+        this.addToPizzaPrice = addToPizzaPrice;
+        this.sideDishName = sideDishName;
+    }
+
+    public double getAddToPizzaPrice() {
+        return addToPizzaPrice;
+    }
+
+    public String getSideDishName() {
+        return sideDishName;
+    }
+}
+
+enum Drinks {
+    COLA(1.5, "Cola"),
+    LEMONADE(1.5, "Lemonade"),
+    WATER(1.0, "Water"),
+    ORANGE_JUICE(2.0, "Orange Juice");
+
+    private final double addToPizzaPrice;
+    private final String drinkName;
+
+    Drinks(double addToPizzaPrice, String drinkName) {
+        this.addToPizzaPrice = addToPizzaPrice;
+        this.drinkName = drinkName;
+    }
+
+    public double getAddToPizzaPrice() {
+        return addToPizzaPrice;
+    }
+
+    public String getDrinkName() {
+        return drinkName;
+    }
+}
+
 public class Slice_o_Heaven {
-    String ingChoice1, ingChoice2, ingChoice3;
-    String ing1, ing2, ing3;    
-    String pizzaSize;
-    String extraCheese;
-    String sideDish;
-    String drinks;
-    String wantDiscount;
-    long cardNumber;
-    String expiryDate;
-    int cvv;
+    private static final double PIZZA_BASE_PRICE = 10.0;
+    private String[] pizzasOrdered = new String[10];
+    private String[] pizzaSizesOrdered = new String[10];
+    private String[] sideDishesOrdered = new String[20];
+    private String[] drinksOrdered = new String[20];
+    private double totalOrderPrice = 0.0;
+    private int orderCount = 0;
     public String storeName;
     public String storeAddress;
     public String storeEmail;
     public long storePhone;
-    public String storeMenu;
-    public String pizzaIngredients;
-    public double pizzaPrice;
-    public String sides;
 
-    @SuppressWarnings("resource")
     public void takeOrder() {
         Scanner scanner = new Scanner(System.in);
-        boolean validInput = false;
+        boolean continueOrdering = true;
 
-        // Ingredient selection
-        while (!validInput) {
-            System.out.println("Please pick any three of the following ingredients:\r\n" + //
-                    " 1. Mushroom\r\n" + //
-                    " 2. Paprika\r\n" + //
-                    " 3. Sun-dried tomatoes\r\n" + //
-                    " 4. Chicken\r\n" + //
-                    " 5. Pineapple\r\n" + //
-                    " Enter any three choices (1, 2, 3,…) separated by spaces:");
-            ingChoice1 = scanner.next();
-            ingChoice2 = scanner.next();
-            ingChoice3 = scanner.next();
-
-            if (isValidIngredientChoice(ingChoice1) && isValidIngredientChoice(ingChoice2) && isValidIngredientChoice(ingChoice3)) {
-                validInput = true;
-                ing1 = convertIngredientChoice(ingChoice1);
-                ing2 = convertIngredientChoice(ingChoice2);
-                ing3 = convertIngredientChoice(ingChoice3);
-            } else {
-                System.out.println("Invalid choice(s). Please pick only from the given list:");
+        while (continueOrdering) {
+            System.out.println("Welcome to Slice-o-Heaven Pizzeria. Here’s what we serve:");
+            for (PizzaSelection pizza : PizzaSelection.values()) {
+                System.out.println((pizza.ordinal() + 1) + ". " + pizza);
             }
-        }
+            System.out.println("Please enter your choice (1 - 6):");
+            int pizzaChoice = scanner.nextInt();
 
-        // Pizza size selection
-        validInput = false;
-        while (!validInput) {
-            System.out.println("What size should your pizza be?\r\n" + //
-                    " 1. Large\r\n" + //
-                    " 2. Medium\r\n" + //
-                    " 3. Small\r\n" + //
-                    " Enter only one choice (1, 2, or 3):");
-            String sizeChoice = scanner.next();
-
-            if (isValidSizeChoice(sizeChoice)) {
-                validInput = true;
-                pizzaSize = convertSizeChoice(sizeChoice);
-            } else {
-                System.out.println("Invalid choice. Please enter a valid size:");
-            }
-        }
-
-        // Extra cheese selection
-        System.out.println("Do you want extra cheese (Y/N):");
-        extraCheese = scanner.next();
-
-        // Side dish selection
-        validInput = false;
-        while (!validInput) {
-            System.out.println("Following are the side dish that go well with your pizza:\r\n" + //
-                    " 1. Calzone\r\n" + //
-                    " 2. Garlic bread\r\n" + //
-                    " 3. Chicken puff\r\n" + //
-                    " 4. Muffin\r\n" + //
-                    " 5. Nothing for me\r\n" + //
-                    " What would you like? Pick one (1, 2, 3,…):");
-            String sideDishChoice = scanner.next();
-
-            if (isValidSideDishChoice(sideDishChoice)) {
-                validInput = true;
-                sideDish = convertSideDishChoice(sideDishChoice);
-            } else {
-                System.out.println("Invalid choice. Please enter a valid side dish:");
-            }
-        }
-
-        // Drink selection
-        validInput = false;
-        while (!validInput) {
-            System.out.println("Choose from one of the drinks below. We recommend Coca Cola:\r\n" + //
-                    " 1. Coca Cola\r\n" + //
-                    " 2. Cold coffee\r\n" + //
-                    " 3. Cocoa Drink\r\n" + //
-                    " 4. No drinks for me\r\n" + //
-                    " Enter your choice:");
-            String drinkChoice = scanner.next();
-
-            if (isValidDrinkChoice(drinkChoice)) {
-                validInput = true;
-                drinks = convertDrinkChoice(drinkChoice);
-            } else {
-                System.out.println("Invalid choice. Please enter a valid drink:");
-            }
-        }
-
-        // Discount selection
-        System.out.println("Would you like the chance to pay only half for your order? (Y/N):");
-        wantDiscount = scanner.next();
-
-        if (wantDiscount.equalsIgnoreCase("Y")) {
-            isItYourBirthday();
-        } else {
-            makeCardPayment();
-        }
-    }
-
-    private boolean isValidIngredientChoice(String choice) {
-        return choice.matches("[1-5]");
-    }
-
-    private String convertIngredientChoice(String choice) {
-        switch (choice) {
-            case "1":
-                return "Mushroom";
-            case "2":
-                return "Paprika";
-            case "3":
-                return "Sun-dried tomatoes";
-            case "4":
-                return "Chicken";
-            case "5":
-                return "Pineapple";
-            default:
-                return "";
-        }
-    }
-
-    private boolean isValidSizeChoice(String choice) {
-        return choice.matches("[1-3]");
-    }
-
-    private String convertSizeChoice(String choice) {
-        switch (choice) {
-            case "1":
-                return "Large";
-            case "2":
-                return "Medium";
-            case "3":
-                return "Small";
-            default:
-                return "";
-        }
-    }
-
-    private boolean isValidSideDishChoice(String choice) {
-        return choice.matches("[1-5]");
-    }
-
-    private String convertSideDishChoice(String choice) {
-        switch (choice) {
-            case "1":
-                return "Calzone";
-            case "2":
-                return "Garlic bread";
-            case "3":
-                return "Chicken puff";
-            case "4":
-                return "Muffin";
-            case "5":
-                return "Nothing for me";
-            default:
-                return "";
-        }
-    }
-
-    private boolean isValidDrinkChoice(String choice) {
-        return choice.matches("[1-4]");
-    }
-
-    private String convertDrinkChoice(String choice) {
-        switch (choice) {
-            case "1":
-                return "Coca Cola";
-            case "2":
-                return "Cold coffee";
-            case "3":
-                return "Cocoa Drink";
-            case "4":
-                return "No drinks for me";
-            default:
-                return "";
-        }
-    }
-
-    @SuppressWarnings("resource")
-    public void isItYourBirthday() {
-        Scanner scanner = new Scanner(System.in);
-        boolean validDate = false;
-        Date birthdate = null;
-        while (!validDate) {
-            System.out.println("Enter your birthday (dd/MM/yyyy):");
-            String birthdateStr = scanner.next();
-            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-            try {
-                birthdate = sdf.parse(birthdateStr);
-                Calendar cal = Calendar.getInstance();
-                cal.setTime(birthdate);
-                int birthYear = cal.get(Calendar.YEAR);
-                int currentYear = Calendar.getInstance().get(Calendar.YEAR);
-                if (currentYear - birthYear < 5 || currentYear - birthYear > 120) {
-                    System.out.println("Invalid date. You are either too young or too dead to order. Please enter a valid date:");
-                } else {
-                    validDate = true;
+            if (pizzaChoice >= 1 && pizzaChoice <= 5) {
+                PizzaSelection selectedPizza = PizzaSelection.values()[pizzaChoice - 1];
+                pizzasOrdered[orderCount] = selectedPizza.toString();
+                totalOrderPrice += selectedPizza.getPrice();
+            } else if (pizzaChoice == 6) {
+                System.out.println("Choose up to 10 toppings:");
+                for (PizzaToppings topping : PizzaToppings.values()) {
+                    System.out.println((topping.ordinal() + 1) + ". " + topping);
                 }
-            } catch (ParseException e) {
-                System.out.println("Invalid date format.");
-            }
-        }
+                System.out.println("Enter your choices separated by spaces:");
+                scanner.nextLine(); // Consume newline
+                String[] toppingChoices = scanner.nextLine().split(" ");
+                StringBuilder customPizzaDescription = new StringBuilder("Custom Pizza with ");
+                double customPizzaPrice = PIZZA_BASE_PRICE;
 
-        Calendar cal = Calendar.getInstance();
-        int currentYear = cal.get(Calendar.YEAR);
-        int currentMonth = cal.get(Calendar.MONTH) + 1;
-        int currentDay = cal.get(Calendar.DAY_OF_MONTH);
-
-        cal.setTime(birthdate);
-        int birthYear = cal.get(Calendar.YEAR);
-        int birthMonth = cal.get(Calendar.MONTH) + 1;
-        int birthDay = cal.get(Calendar.DAY_OF_MONTH);
-
-        int age = currentYear - birthYear;
-        if (currentMonth < birthMonth || (currentMonth == birthMonth && currentDay < birthDay)) {
-            age--;
-        }
-
-        if (age < 18 && currentMonth == birthMonth && currentDay == birthDay) {
-            System.out.println("Congratulations! You pay only half the price for your order");
-        } else {
-            System.out.println("Too bad! You do not meet the conditions to get our 50% discount");
-        }
-    }
-
-    public void makeCardPayment() {
-        Scanner scanner = new Scanner(System.in);
-        boolean validDate = false;
-        while (!validDate) {
-            System.out.println("Enter your card number:");
-            cardNumber = scanner.nextLong();
-            System.out.println("Enter the card's expiry date (MM/yyyy):");
-            expiryDate = scanner.next();
-            SimpleDateFormat sdf = new SimpleDateFormat("MM/yyyy");
-            try {
-                Date expDate = sdf.parse(expiryDate);
-                if (expDate.before(new Date())) {
-                    System.out.println("Invalid date. Please enter a future date:");
-                } else {
-                    validDate = true;
+                for (String choice : toppingChoices) {
+                    int toppingIndex = Integer.parseInt(choice) - 1;
+                    PizzaToppings selectedTopping = PizzaToppings.values()[toppingIndex];
+                    customPizzaDescription.append(selectedTopping.getTopping()).append(", ");
+                    customPizzaPrice += selectedTopping.getToppingPrice();
                 }
-            } catch (ParseException e) {
-                System.out.println("Invalid date format.");
+                customPizzaDescription.append("for €").append(customPizzaPrice);
+                pizzasOrdered[orderCount] = customPizzaDescription.toString();
+                totalOrderPrice += customPizzaPrice;
             }
-        }
-        System.out.println("Enter the card's cvv number:");
-        cvv = scanner.nextInt();
 
-        processCardPayment(cardNumber, expiryDate, cvv);
-    }
-
-    public void processCardPayment(long cardNumber, String expiryDate, int cvv) {
-        final long BLACKLISTED_NUMBER = 12345678901234L;
-        boolean validCard = false;
-        while (!validCard) {
-            String cardNumberStr = Long.toString(cardNumber);
-            if (cardNumberStr.length() == 14 && cardNumber != BLACKLISTED_NUMBER) {
-                validCard = true;
-                String firstCardDigit = cardNumberStr.substring(0, 1);
-                String lastFourDigits = cardNumberStr.substring(cardNumberStr.length() - 4);
-                String cardNumberToDisplay = firstCardDigit + cardNumberStr.substring(1, cardNumberStr.length() - 4).replaceAll(".", "*") + lastFourDigits;
-                System.out.println("Card accepted. Card number to display: " + cardNumberToDisplay);
-            } else {
-                System.out.println("Invalid card. Please enter a valid card number:");
-                Scanner scanner = new Scanner(System.in);
-                cardNumber = scanner.nextLong();
+            System.out.println("Choose a pizza size:");
+            for (PizzaSize size : PizzaSize.values()) {
+                System.out.println((size.ordinal() + 1) + ". " + size);
             }
-        }
-    }
+            int sizeChoice = scanner.nextInt();
+            PizzaSize selectedSize = PizzaSize.values()[sizeChoice - 1];
+            pizzaSizesOrdered[orderCount] = selectedSize.getPizzaSize();
+            totalOrderPrice += selectedSize.getAddToPizzaPrice();
 
-    public void specialOfTheDay() {
-        // This method remains unchanged
-        System.out.println("Special of the day: Free garlic bread with a large pizza!");
+            System.out.println("Choose a side dish:");
+            for (SideDish side : SideDish.values()) {
+                System.out.println((side.ordinal() + 1) + ". " + side);
+            }
+            int sideChoice = scanner.nextInt();
+            SideDish selectedSide = SideDish.values()[sideChoice - 1];
+            sideDishesOrdered[orderCount] = selectedSide.getSideDishName();
+            totalOrderPrice += selectedSide.getAddToPizzaPrice();
+
+            System.out.println("Choose a drink:");
+            for (Drinks drink : Drinks.values()) {
+                System.out.println((drink.ordinal() + 1) + ". " + drink);
+            }
+            int drinkChoice = scanner.nextInt();
+            Drinks selectedDrink = Drinks.values()[drinkChoice - 1];
+            drinksOrdered[orderCount] = selectedDrink.getDrinkName();
+            totalOrderPrice += selectedDrink.getAddToPizzaPrice();
+
+            orderCount++;
+
+            System.out.println("Would you like to order another pizza? (Y/N):");
+            String continueChoice = scanner.next();
+            continueOrdering = continueChoice.equalsIgnoreCase("Y");
+        }
     }
 
     @Override
     public String toString() {
-        StringBuilder receipt = new StringBuilder();
-        receipt.append("----- Receipt -----\n");
-        receipt.append("Pizza Ingredients: ").append(ingChoice1).append(", ").append(ingChoice2).append(", ").append(ingChoice3).append("\n");
-        receipt.append("Pizza Size: ").append(pizzaSize).append("\n");
-        receipt.append("Extra Cheese: ").append(extraCheese).append("\n");
-        receipt.append("Side Dish: ").append(sideDish).append("\n");
-        receipt.append("Drinks: ").append(drinks).append("\n");
-        if (wantDiscount.equalsIgnoreCase("Y")) {
-            receipt.append("Discount Checked: Checked birthday for discount\n");
-        } else {
-            receipt.append("Discount Checked: Not requested\n");
-            receipt.append("Card Number: ").append(Long.toString(cardNumber).substring(0, 1)).append(Long.toString(cardNumber).substring(1, Long.toString(cardNumber).length() - 4).replaceAll(".", "*")).append(Long.toString(cardNumber).substring(Long.toString(cardNumber).length() - 4)).append("\n");
-            receipt.append("Expiry Date: ").append(expiryDate).append("\n");
-            receipt.append("CVV: ").append(cvv).append("\n");
+        StringBuilder receipt = new StringBuilder("----- Receipt -----\n");
+        for (int i = 0; i < orderCount; i++) {
+            receipt.append("Pizza: ").append(pizzasOrdered[i]).append("\n");
+            receipt.append("Size: ").append(pizzaSizesOrdered[i]).append("\n");
+            receipt.append("Side Dish: ").append(sideDishesOrdered[i]).append("\n");
+            receipt.append("Drink: ").append(drinksOrdered[i]).append("\n");
+            receipt.append("-------------------\n");
         }
-        receipt.append("-------------------");
+        receipt.append("Total Order Price: €").append(totalOrderPrice).append("\n");
         return receipt.toString();
     }
 
     public static void main(String[] args) {
         Slice_o_Heaven soh = new Slice_o_Heaven();
         soh.takeOrder();
-        soh.specialOfTheDay();
         System.out.println(soh);
     }
 }
